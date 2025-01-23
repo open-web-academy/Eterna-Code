@@ -38,7 +38,7 @@ import { ApiProvider, AccountProvider, useAccount as varaAccount } from "@gear-j
 import { GearWalletButton } from "./components/varaNetwork/gearWalletButton"
 import { VaraProvider } from "./components/navigation/VaraProvider";
 import { VaraNetwork } from './components/varaNetwork/VaraNetwork'
-import {ReadState} from './components/varaNetwork/ReadState'
+import AppWalletProvider from "./components/solana/AppWalletProvider";
 import Main from './components/documentation/Main'
 
 export const refreshAllowanceObj = {};
@@ -206,40 +206,44 @@ function App(props) {
 
   return (
     <div className="App">
-      <ApiProvider initialArgs={{ endpoint: WssVara }}>
-        <AccountProvider>
-          <EthersProviderContext.Provider value={ethersProviderContext}>
-            <Router basename={process.env.PUBLIC_URL}>
-              <Switch>
-                <Route path={"/signin"}>
-                  <NavigationWrapper {...passProps} />
-                  <SignInPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/embed/:widgetSrc*"}>
-                  <EmbedPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/edit/:widgetSrc*"}>
-                  <NavigationWrapper {...passProps} />
-                  <EditorPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/docs/:docsRoute*"}>
-                  <NavigationWrapper {...passProps} />
-                  <Main {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/:widgetSrc*"}>
-                  <NavigationWrapper {...passProps} />
-                  <ViewPage {...passProps} />
-                  <Footer/>
-                </Route>
-              </Switch>
-            </Router>
-          </EthersProviderContext.Provider>
-        </AccountProvider>
-      </ApiProvider>
+      
+        <ApiProvider initialArgs={{ endpoint: WssVara }}>
+          <AccountProvider>
+            <EthersProviderContext.Provider value={ethersProviderContext}>
+            <AppWalletProvider>
+              <Router basename={process.env.PUBLIC_URL}>
+                <Switch>
+                  <Route path={"/signin"}>
+                    <NavigationWrapper {...passProps} />
+                    <SignInPage {...passProps} />
+                    <Footer/>
+                  </Route>
+                  <Route path={"/embed/:widgetSrc*"}>
+                    <EmbedPage {...passProps} />
+                    <Footer/>
+                  </Route>
+                  <Route path={"/edit/:widgetSrc*"}>
+                    <NavigationWrapper {...passProps} />
+                    <EditorPage {...passProps} />
+                    <Footer/>
+                  </Route>
+                  <Route path={"/docs/:docsRoute*"}>
+                    <NavigationWrapper {...passProps} />
+                    <Main {...passProps} />
+                    <Footer/>
+                  </Route>
+                  <Route path={"/:widgetSrc*"}>
+                    <NavigationWrapper {...passProps} />
+                    <ViewPage {...passProps} />
+                    <Footer/>
+                  </Route>
+                </Switch>
+              </Router>
+              </AppWalletProvider>
+            </EthersProviderContext.Provider>
+          </AccountProvider>
+        </ApiProvider>
+      
     </div>
   );
 }

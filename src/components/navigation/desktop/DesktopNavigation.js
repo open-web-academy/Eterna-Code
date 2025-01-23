@@ -15,6 +15,7 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { Button } from "react-bootstrap";
 import logo from "../../../images/ETERNACODE_LOGO-NEW.png";
 import { GearWalletButton } from "../../varaNetwork/gearWalletButton";
+import { SolanaWalletButton } from "../../solana/solanaWalletButton";
 import Swal from "sweetalert2";
 
 const StyledNavigation = styled.div`
@@ -94,7 +95,8 @@ export function DesktopNavigation(props) {
           <NavigationButton route="/">Home</NavigationButton>
           <NavigationButton route="/edit">Editor</NavigationButton>
           <NavigationButton route="/docs">Docs</NavigationButton>
-          <GearWalletButton></GearWalletButton>
+          <GearWalletButton/>
+          <SolanaWalletButton/>
         </div>
         <div className="user-section">
           <DevActionsDropdown {...props} />
