@@ -24,9 +24,9 @@ import {
 import { useHashRouterLegacy } from "../hooks/useHashRouterLegacy";
 import vmTypesDeclaration from "raw-loader!near-social-vm-types";
 import styled from "styled-components";
-import * as GearHooks from '@gear-js/react-hooks'
-import { ProgramMetadata } from "@gear-js/api";
-import { web3FromSource } from "@polkadot/extension-dapp";
+import { useAccount, useWriteContract } from "wagmi";
+import { SaveCodeModal } from "../components/Editor/SaveCodeModal";
+import OpenModalCode from "../components/Editor/OpenModalCode";
 
 const LsKey = "social.near:v01:";
 const EditorLayoutKey = LsKey + "editorLayout:";
@@ -53,7 +53,10 @@ export default function EditorPage(props) {
   const [localWidgetSrc, setLocalWidgetSrc] = useState(widgetSrc);
   const history = useHistory();
   const setWidgetSrc = props.setWidgetSrc;
+  const account = useAccount()
+  
 
+  const [showModalCode, setShowModalCode] = useState(false)
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState(undefined);
   const [path, setPath] = useState(undefined);
@@ -90,6 +93,11 @@ export default function EditorPage(props) {
     const varaAccount: Object = varaAccount2;
   }
   `
+  
+
+  const handleModalCode = () =>{
+    setShowModalCode(!showModalCode)
+  }
 
   const monaco = useMonaco();
   
@@ -628,6 +636,12 @@ export default function EditorPage(props) {
         }
         onHide={() => setShowOpenModal(false)}
       />
+      <OpenModalCode
+        show={showModalCode}
+        code ={code}
+        onHide={() => setShowModalCode(false)}
+      />
+      
       <div className="mb-3">
         <Nav
           variant="pills mb-1"
@@ -836,6 +850,7 @@ export default function EditorPage(props) {
                       Preview
                     </button>
                     {!path?.unnamed && commitButton}
+                    
                     <button
                       className={`btn ${
                         path?.unnamed ? "btn-success" : "btn-outline-secondary"

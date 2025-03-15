@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Logotype } from "../Logotype";
 import { NavigationButton } from "../NavigationButton";
 import { ArrowUpRight } from "../../icons/ArrowUpRight";
@@ -16,6 +16,8 @@ import { Button } from "react-bootstrap";
 import logo from "../../../images/ETERNACODE_LOGO-NEW.png";
 import { GearWalletButton } from "../../varaNetwork/gearWalletButton";
 import Swal from "sweetalert2";
+import { ConnectKitButton } from "connectkit";
+
 
 const StyledNavigation = styled.div`
   position: sticky;
@@ -73,10 +75,21 @@ const StyledLogo = styled.img`
   margin-right: 10px;
 `;
 
+const Banner = styled.div`
+  width: 100%;
+  background-color: var(--white-light-2);
+  background-color: var(--green-vara-1);
+  padding: 10px 0 10px 0;
+  margin: 5px 0 0 0;
+  text-align: center;
+  font-weight: 700;
+`
+
 export function DesktopNavigation(props) {
   const varaAccount = useAccount();
   const varaApi = useApi();
-
+  const location = useLocation();
+  const path = location.pathname;
 
   return (
     <StyledNavigation>
@@ -92,9 +105,12 @@ export function DesktopNavigation(props) {
         </Link>
         <div className="navigation-section">
           <NavigationButton route="/">Home</NavigationButton>
-          <NavigationButton route="/edit">Editor</NavigationButton>
+          <NavigationButton route="/edit">UI Editor</NavigationButton>
+          <NavigationButton route="/editai">AI Editor</NavigationButton>
           <NavigationButton route="/docs">Docs</NavigationButton>
           <GearWalletButton></GearWalletButton>
+          <ConnectKitButton/>
+          
         </div>
         <div className="user-section">
           <DevActionsDropdown {...props} />
@@ -108,6 +124,11 @@ export function DesktopNavigation(props) {
           )}
         </div>
       </div>
+      {path === "/" && <Banner>
+        <p className="py-2 text-center m-0">Try our new AI script storage functionality, see the examples on this page.<br/>To test it use Scroll Sepolia.</p>
+        <Button variant="light" href="/searchmodel">Search AI Scripts</Button>
+      </Banner>}
+      
     </StyledNavigation>
   );
 }

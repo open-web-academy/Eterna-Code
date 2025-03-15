@@ -8,7 +8,9 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import "App.scss";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import EditorPage from "./pages/EditorPage";
+import EditorAIPage from "./pages/EditorAIPage";
 import ViewPage from "./pages/ViewPage";
+import ViewModelAIPage from './pages/ViewModelAIPage'
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
@@ -40,11 +42,19 @@ import { VaraProvider } from "./components/navigation/VaraProvider";
 import { VaraNetwork } from './components/varaNetwork/VaraNetwork'
 import {ReadState} from './components/varaNetwork/ReadState'
 import Main from './components/documentation/Main'
+import {config} from './config/Web3ProviderConfig'
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import ContractReader from "./components/ContractReader";
+import TestModelPage from "./pages/TestModelPage";
+import SearchModelsPage from "./pages/SearchModelsPage";
 
 export const refreshAllowanceObj = {};
 const documentationHref = "https://social.near-docs.io/";
 
 function App(props) {
+  const queryClient = new QueryClient();
   const [connected, setConnected] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [signedAccountId, setSignedAccountId] = useState(null);
@@ -206,40 +216,61 @@ function App(props) {
 
   return (
     <div className="App">
-      <ApiProvider initialArgs={{ endpoint: WssVara }}>
-        <AccountProvider>
-          <EthersProviderContext.Provider value={ethersProviderContext}>
-            <Router basename={process.env.PUBLIC_URL}>
-              <Switch>
-                <Route path={"/signin"}>
-                  <NavigationWrapper {...passProps} />
-                  <SignInPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/embed/:widgetSrc*"}>
-                  <EmbedPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/edit/:widgetSrc*"}>
-                  <NavigationWrapper {...passProps} />
-                  <EditorPage {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/docs/:docsRoute*"}>
-                  <NavigationWrapper {...passProps} />
-                  <Main {...passProps} />
-                  <Footer/>
-                </Route>
-                <Route path={"/:widgetSrc*"}>
-                  <NavigationWrapper {...passProps} />
-                  <ViewPage {...passProps} />
-                  <Footer/>
-                </Route>
-              </Switch>
-            </Router>
-          </EthersProviderContext.Provider>
-        </AccountProvider>
-      </ApiProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <ConnectKitProvider theme="rounded">
+            <ApiProvider initialArgs={{ endpoint: WssVara }}>
+              <AccountProvider>
+                <EthersProviderContext.Provider value={ethersProviderContext}>
+                  <Router basename={process.env.PUBLIC_URL}>
+                    <Switch>
+                      <Route path={"/signin"}>
+                        <NavigationWrapper {...passProps} />
+                        <SignInPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/embed/:widgetSrc*"}>
+                        <EmbedPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/edit/:widgetSrc*"}>
+                        <NavigationWrapper {...passProps} />
+                        <EditorPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/editai/:widgetSrc*"}>
+                        <NavigationWrapper {...passProps} />
+                        <EditorAIPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/docs/:docsRoute*"}>
+                        <NavigationWrapper {...passProps} />
+                        <Main {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/searchmodel"}>
+                        <NavigationWrapper {...passProps} />
+                        <SearchModelsPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/aimodel/:widgetSrc*"}>
+                        <NavigationWrapper {...passProps} />
+                        <TestModelPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                      <Route path={"/:widgetSrc*"}>
+                        <NavigationWrapper {...passProps} />
+                        <ViewPage {...passProps} />
+                        <Footer/>
+                      </Route>
+                    </Switch>
+                  </Router>
+                </EthersProviderContext.Provider>
+              </AccountProvider>
+            </ApiProvider>
+          </ConnectKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </div>
   );
 }
