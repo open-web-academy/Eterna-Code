@@ -1,5 +1,5 @@
 import React from "react";
-import { useAccount } from '@gear-js/react-hooks';
+import { useAccount, useBalance, useBalanceFormat, useApi } from '@gear-js/react-hooks';
 import {useMulticontractSails} from '../../hooks/useMulticontractSails'
 import Swal from "sweetalert2";
 
